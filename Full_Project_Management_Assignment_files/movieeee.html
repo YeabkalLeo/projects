@@ -61,7 +61,7 @@
       </div>
     </div>
 
-    
+
     <div class="mt-5">
       <h4>Calculate Rental Cost</h4>
       <input type="text" id="username" placeholder="Enter your name" class="form-control mb-2" />
@@ -71,7 +71,6 @@
       <p id="result" class="mt-3 fw-bold"></p>
     </div>
 
-    <!-- Saved Rental Records Section -->
     <div class="mt-4">
       <h5>Saved Rental Records</h5>
       <table class="table table-striped" id="rentalRecordsTable">
@@ -90,53 +89,46 @@
   </div>
 
   <script>
-    const apiKey = 'YOUR_TMDB_API_KEY'; 
     const posterGrid = document.getElementById('movie-posters');
 
-
-
-    
-    const fallbackPosters = [
-      {title: 'Joker', poster_path: 'https://image.tmdb.org/t/p/w500/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg'},
-
-      {title: 'Interstellar', poster_path: 'https://image.tmdb.org/t/p/w500/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg'},
-      {title: 'The Dark Knight', poster_path: 'https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg'},
-      {title: 'Avengers: Endgame', poster_path: 'https://image.tmdb.org/t/p/w500/or06FN3Dka5tukK1e9sl16pB3iy.jpg'},
-      {title: 'The Matrix', poster_path: 'https://image.tmdb.org/t/p/w500/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg'},
-      {title: 'Pulp Fiction', poster_path: 'https://image.tmdb.org/t/p/w500/d5iIlFn5s0ImszYzBPb8JPIfbXD.jpg'},
-      {title: 'Fight Club', poster_path: 'https://image.tmdb.org/t/p/w500/bptfVGEQuv6vDTIMVCHjJ9Dz8PX.jpg'},
-      {title: 'Forrest Gump', poster_path: 'https://image.tmdb.org/t/p/w500/saHP97rTPS5eLmrLQEcANmKrsFl.jpg'},
-      {title: 'The Shawshank Redemption', poster_path: 'https://image.tmdb.org/t/p/w500/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg'},
-      {title: 'Gladiator', poster_path: 'https://image.tmdb.org/t/p/w500/ty8TGRuvJLPUmAR1H1nRIsgwvim.jpg'},
-      {title: 'The Lion King', poster_path: 'https://image.tmdb.org/t/p/w500/sKCr78MXSLixwmZ8DyJLrpMsd15.jpg'},
-
-   
-      {title: 'The Batman', poster_path: 'https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onhq.jpg'},
-
-      {title: 'Toy Story', poster_path: 'https://image.tmdb.org/t/p/w500/uXDfjJbdP4ijW5hWSBrPrlKpxab.jpg'},
-      {title: 'Spider-Man: Into the Spider-Verse', poster_path: 'https://image.tmdb.org/t/p/w500/iiZZdoQBEYBv6id8su7ImL0oCbD.jpg'},
-      {title: 'Dune', poster_path: 'https://image.tmdb.org/t/p/w500/d5NXSklXo0qyIYkgV94XAgMIckC.jpg'},
-
-      {title: 'Black Panther', poster_path: 'https://image.tmdb.org/t/p/w500/uxzzxijgPIY7slzFvMotPv8wjKA.jpg'},
-      {title: 'Wonder Woman', poster_path: 'https://image.tmdb.org/t/p/w500/8UlWHLMpgZm9bx6QYh0NFoq67TZ.jpg'},
-
-      
-      {title: 'Star Wars: The Rise of Skywalker', poster_path: 'https://image.tmdb.org/t/p/w500/db32LaOibwEliAmSL2jjDF6oDdj.jpg'},
-
-     
-      {title: 'Spider-Man: No Way Home', poster_path: 'https://image.tmdb.org/t/p/w500/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg'},
-
-      {title: 'The Avengers', poster_path: 'https://image.tmdb.org/t/p/w500/RYMX2wcKCBAr24UyPD7xwmjaTn.jpg'}
+    // List of IMDb IDs you want to fetch
+    const imdbIDs = [
+      "tt2250912", // Spider-Man: Homecoming
+      "tt1375666", // Inception
+      "tt0816692", // Interstellar
+      "tt4154796", // Avengers: Endgame
+      "tt0133093", // The Matrix
+      "tt0110912", // Pulp Fiction
     ];
 
+    async function fetchMultipleMovies(ids) {
+      const movies = [];
+      for (const id of ids) {
+        try {
+          const res = await fetch(`https://imdb.iamidiotareyoutoo.com/search?tt=${id}`);
+          const data = await res.json();
+          if (data.ok && data.short) {
+            movies.push({
+              title: data.short.name,
+              poster_path: data.short.image
+            });
+          }
+        } catch (err) {
+          console.error(`Failed to fetch movie ${id}`, err);
+        }
+      }
+      displayPosters(movies);
+    }
+
+    
     function displayPosters(movies) {
       posterGrid.innerHTML = '';
       movies.forEach(movie => {
-        if(movie.poster_path){
+        if(movie.poster_path && movie.title){
           const div = document.createElement('div');
           div.className = 'col-md-3 poster-item';
           div.innerHTML = `
-            <img src="${movie.poster_path.startsWith('http') ? movie.poster_path : 'https://image.tmdb.org/t/p/w500'+movie.poster_path}" alt="${movie.title}" />
+            <img src="${movie.poster_path}" alt="${movie.title}" />
             <p class="text-center mt-2">${movie.title}</p>
           `;
           posterGrid.appendChild(div);
@@ -144,25 +136,10 @@
       });
     }
 
-    if(apiKey && apiKey !== 'YOUR_TMDB_API_KEY'){
-      fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=en-US&page=1`)
-        .then(res => {
-          if(!res.ok) throw new Error('API fetch failed');
-          return res.json();
-        })
-        .then(data => {
-          if(data.results && data.results.length > 0){
-            displayPosters(data.results.slice(0,20));
-          } else {
-            displayPosters(fallbackPosters);
-          }
-        })
-        .catch(() => displayPosters(fallbackPosters));
-    } else {
-      displayPosters(fallbackPosters);
-    }
+    fetchMultipleMovies(imdbIDs);
 
-    //crud
+    // Genre & Rental code below unchanged from your original (you can keep it as is)
+
     const genreLabels = ['Action', 'Adventure', 'Comedy', 'Romance', 'Horror', 'Animation'];
     const defaultTotals = [5, 4, 6, 3, 1, 2];
 
@@ -228,7 +205,6 @@
       genreChart.update();
     }
 
-    // Delete row and update
     document.getElementById('genre-table').addEventListener('click', e => {
       if(e.target.tagName === 'BUTTON'){
         const idx = parseInt(e.target.dataset.index);
@@ -242,24 +218,23 @@
       }
     });
 
-document.getElementById('genre-table').addEventListener('blur', e => {
-  if (e.target.classList.contains('total-cell')) {
-    const genre = e.target.dataset.genre;
-    let val = parseInt(e.target.textContent);
-    if (isNaN(val) || val < 0) val = 0;
-    e.target.textContent = val;
+    document.getElementById('genre-table').addEventListener('blur', e => {
+      if (e.target.classList.contains('total-cell')) {
+        const genre = e.target.dataset.genre;
+        let val = parseInt(e.target.textContent);
+        if (isNaN(val) || val < 0) val = 0;
+        e.target.textContent = val;
 
-    const index = genreLabels.indexOf(genre);
-    if (index !== -1) {
-      genreTotals[index] = val;
-      saveGenreTotals(genreTotals);
-      genreChart.data.datasets[0].data = genreTotals;
-      genreChart.update();
-    }
-  }
-}, true); 
+        const index = genreLabels.indexOf(genre);
+        if (index !== -1) {
+          genreTotals[index] = val;
+          saveGenreTotals(genreTotals);
+          genreChart.data.datasets[0].data = genreTotals;
+          genreChart.update();
+        }
+      }
+    }, true);
 
-    
     function calculatePrice(){
       const name = document.getElementById('username').value.trim();
       const totalMovies = parseInt(document.getElementById('rentedMovies').value);
@@ -322,3 +297,4 @@ document.getElementById('genre-table').addEventListener('blur', e => {
   </script>
 </body>
 </html>
+
