@@ -61,7 +61,7 @@
       </div>
     </div>
 
-    <!-- Rental Price Section -->
+    
     <div class="mt-5">
       <h4>Calculate Rental Cost</h4>
       <input type="text" id="username" placeholder="Enter your name" class="form-control mb-2" />
@@ -90,12 +90,13 @@
   </div>
 
   <script>
-    const apiKey = 'YOUR_TMDB_API_KEY'; // Replace with your TMDB API key
+    const apiKey = 'YOUR_TMDB_API_KEY'; 
     const posterGrid = document.getElementById('movie-posters');
 
-    // 3. Updated fallback posters replacing requested movies:
+
+
+    
     const fallbackPosters = [
-      // Inception replaced with Joker
       {title: 'Joker', poster_path: 'https://image.tmdb.org/t/p/w500/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg'},
 
       {title: 'Interstellar', poster_path: 'https://image.tmdb.org/t/p/w500/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg'},
@@ -109,22 +110,20 @@
       {title: 'Gladiator', poster_path: 'https://image.tmdb.org/t/p/w500/ty8TGRuvJLPUmAR1H1nRIsgwvim.jpg'},
       {title: 'The Lion King', poster_path: 'https://image.tmdb.org/t/p/w500/sKCr78MXSLixwmZ8DyJLrpMsd15.jpg'},
 
-      // Jurassic Park replaced with The Batman
+   
       {title: 'The Batman', poster_path: 'https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onhq.jpg'},
 
       {title: 'Toy Story', poster_path: 'https://image.tmdb.org/t/p/w500/uXDfjJbdP4ijW5hWSBrPrlKpxab.jpg'},
       {title: 'Spider-Man: Into the Spider-Verse', poster_path: 'https://image.tmdb.org/t/p/w500/iiZZdoQBEYBv6id8su7ImL0oCbD.jpg'},
-
-      // Frozen replaced with Dune
       {title: 'Dune', poster_path: 'https://image.tmdb.org/t/p/w500/d5NXSklXo0qyIYkgV94XAgMIckC.jpg'},
 
       {title: 'Black Panther', poster_path: 'https://image.tmdb.org/t/p/w500/uxzzxijgPIY7slzFvMotPv8wjKA.jpg'},
       {title: 'Wonder Woman', poster_path: 'https://image.tmdb.org/t/p/w500/8UlWHLMpgZm9bx6QYh0NFoq67TZ.jpg'},
 
-      // Guardians of the Galaxy replaced with Star Wars: The Rise of Skywalker
+      
       {title: 'Star Wars: The Rise of Skywalker', poster_path: 'https://image.tmdb.org/t/p/w500/db32LaOibwEliAmSL2jjDF6oDdj.jpg'},
 
-      // Deadpool replaced with Spider-Man: No Way Home
+     
       {title: 'Spider-Man: No Way Home', poster_path: 'https://image.tmdb.org/t/p/w500/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg'},
 
       {title: 'The Avengers', poster_path: 'https://image.tmdb.org/t/p/w500/RYMX2wcKCBAr24UyPD7xwmjaTn.jpg'}
@@ -145,7 +144,6 @@
       });
     }
 
-    // Fetch posters from TMDB API if key exists, else fallback
     if(apiKey && apiKey !== 'YOUR_TMDB_API_KEY'){
       fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=en-US&page=1`)
         .then(res => {
@@ -164,7 +162,7 @@
       displayPosters(fallbackPosters);
     }
 
-    // 1. Data table CRUD with save and chart update
+    //crud
     const genreLabels = ['Action', 'Adventure', 'Comedy', 'Romance', 'Horror', 'Animation'];
     const defaultTotals = [5, 4, 6, 3, 1, 2];
 
@@ -244,7 +242,6 @@
       }
     });
 
-    // Listen to blur event to save updated total immediately when user finishes editing a cell
 document.getElementById('genre-table').addEventListener('blur', e => {
   if (e.target.classList.contains('total-cell')) {
     const genre = e.target.dataset.genre;
@@ -252,7 +249,6 @@ document.getElementById('genre-table').addEventListener('blur', e => {
     if (isNaN(val) || val < 0) val = 0;
     e.target.textContent = val;
 
-    // Update the correct index in genreTotals
     const index = genreLabels.indexOf(genre);
     if (index !== -1) {
       genreTotals[index] = val;
@@ -261,9 +257,9 @@ document.getElementById('genre-table').addEventListener('blur', e => {
       genreChart.update();
     }
   }
-}, true); // useCapture=true to catch blur during event capturing
+}, true); 
 
-    // 2. Rental Price Calculator with saving and display below
+    
     function calculatePrice(){
       const name = document.getElementById('username').value.trim();
       const totalMovies = parseInt(document.getElementById('rentedMovies').value);
@@ -326,44 +322,3 @@ document.getElementById('genre-table').addEventListener('blur', e => {
   </script>
 </body>
 </html>
-
- /*
-    ============================
-    🎬 Movie Rental Dashboard - JavaScript Overview
-    ============================
-
-    🚀 1. Bootstrap Integration:
-       - Bootstrap 5 is used for responsive layout, styling, and UI components like buttons, tables, and grid.
-       - Classes like `container`, `row`, `col-md-*`, `btn`, and `table` help build a mobile-friendly dashboard.
-
-    🌐 2. TMDB API (optional):
-       - Poster images are fetched using The Movie Database (TMDB) API.
-       - If an API key is not provided, fallback movie posters are used instead.
-       - Demonstrates how to handle external data with `fetch()` and handle JSON responses.
-
-    🧠 3. DOM Manipulation:
-       - JavaScript dynamically creates and updates HTML elements like tables, images, and chart data.
-       - Methods like `document.createElement`, `appendChild`, `querySelector`, and `innerHTML` are used.
-       - Live updates happen on user input (e.g., updating totals or rental records).
-
-    ✏️ 4. CRUD Operations (on Genre and Rental Records):
-       - Create: Add movie rental records and genre totals.
-       - Read: Load records from `localStorage` on page load.
-       - Update: Edit totals directly in the data table or update rental records.
-       - Delete: Clear all saved rental records or remove a genre row.
-
-    📊 5. Chart.js Doughnut Chart:
-       - Visualizes genre totals using a doughnut chart from Chart.js.
-       - Auto-updates whenever the data table is edited.
-
-    📋 6. Data Table:
-       - A genre table displays editable movie totals per genre.
-       - Another table shows saved rental transactions, fetched from `localStorage`.
-
-    📁 7. Dashboard Functionality:
-       - A user-friendly dashboard combining visual stats (chart), editable data (table), and interactions (form).
-       - Rental calculator computes total cost per user and displays/saves the result.
-
-    👨‍💻 Summary:
-       This file showcases a full front-end dashboard app using HTML, CSS (Bootstrap), JavaScript (DOM/API/CRUD),
-       and a real chart library (Chart.js) with persistent data storage using `localStorage`. */
