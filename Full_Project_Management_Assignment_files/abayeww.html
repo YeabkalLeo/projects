@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abayew Wassie Medicine Import</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .profile-container {
+            max-width: 1000px;
+            margin: 30px auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .profile-header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .profile-header h1 {
+            margin: 0;
+            font-size: 2em;
+            font-weight: 700;
+        }
+        
+        .profile-content {
+            display: flex;
+            padding: 20px;
+            gap: 30px;
+        }
+        
+        .profile-section {
+            flex: 1;
+        }
+        
+        .profile-image img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #ecf0f1;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .contact-info {
+            margin-top: 20px;
+        }
+        
+        .contact-info h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+        }
+        
+        .medicine-import {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .medicine-import h2 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .results {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f4fc;
+            border-radius: 4px;
+        }
+        
+        .import-history {
+            margin-top: 30px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+        }
+        
+        @media (max-width: 768px) {
+            .profile-content {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <div class="profile-header">
+            <h1>Abayew Wassie Medicine Import</h1>
+            <p>Professional Medicine Import Services</p>
+        </div>
+        
+        <div class="profile-content">
+            <div class="profile-section">
+                <div class="profile-image">
+                    <img src="photo_2025-05-23_19-36-29.jpg" alt="Abayew Wassie Profile Picture">
+                </div>
+                
+                <div class="contact-info">
+                    <h2>Contact Information</h2>
+                    <p><strong>Email:</strong> contact abamelese@gmail.com</p>
+                    <p><strong>Phone:</strong> +251 911301974</p>
+                    <p><strong>Address:</strong> Addis Ababa, Ethiopia</p>
+                </div>
+            </div>
+            
+            <div class="profile-section">
+                <div class="medicine-import">
+                    <h2>Medicine Import Tracking</h2>
+                    
+                    <div class="form-group">
+                        <label for="medicine-type">Medicine Type:</label>
+                        <select id="medicine-type">
+                            <option value="">Select a type</option>
+                            <option value="skin">Skin Medicine</option>
+                            <option value="antibiotics">Antibiotics</option>
+                            <option value="eye">Eye Medicine</option>
+                            <option value="teeth">Teeth Medicine</option>
+                            <option value="other">Other Medicine</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="medicine-name">Medicine Name:</label>
+                        <input type="text" id="medicine-name" placeholder="Enter medicine name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="quantity">Quantity:</label>
+                        <input type="number" id="quantity" placeholder="Enter quantity" min="1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="unit-price">Unit Price (USD):</label>
+                        <input type="number" id="unit-price" placeholder="Enter price per unit" min="0" step="0.01">
+                    </div>
+                    
+                    <button id="calculate-btn">Calculate Total</button>
+                    
+                    <div class="results" id="results" style="display: none;">
+                        <h3>Import Summary</h3>
+                        <p><strong>Medicine Type:</strong> <span id="result-type"></span></p>
+                        <p><strong>Medicine Name:</strong> <span id="result-name"></span></p>
+                        <p><strong>Quantity:</strong> <span id="result-quantity"></span></p>
+                        <p><strong>Unit Price:</strong> $<span id="result-price"></span></p>
+                        <p><strong>Total Cost:</strong> $<span id="result-total"></span></p>
+                        <button id="save-btn">Save Import</button>
+                    </div>
+                </div>
+                
+                <div class="import-history">
+                    <h2>Import History</h2>
+                    <table id="import-table">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Medicine</th>
+                                <th>Quantity</th>
+                                <th>Unit Price</th>
+                                <th>Total</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="import-data">
+                            <!-- Data will be added here dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const calculateBtn = document.getElementById('calculate-btn');
+            const saveBtn = document.getElementById('save-btn');
+            const resultsDiv = document.getElementById('results');
+            const importTable = document.getElementById('import-data');
+            
+            // Calculate total cost
+            calculateBtn.addEventListener('click', function() {
+                const medicineType = document.getElementById('medicine-type').value;
+                const medicineName = document.getElementById('medicine-name').value.trim();
+                const quantity = parseInt(document.getElementById('quantity').value);
+                const unitPrice = parseFloat(document.getElementById('unit-price').value);
+                
+                if (!medicineType || !medicineName || isNaN(quantity) || isNaN(unitPrice)) {
+                    alert('Please fill in all fields with valid values');
+                    return;
+                }
+                
+                const totalCost = quantity * unitPrice;
+                
+                // Display results
+                document.getElementById('result-type').textContent = document.getElementById('medicine-type').options[document.getElementById('medicine-type').selectedIndex].text;
+                document.getElementById('result-name').textContent = medicineName;
+                document.getElementById('result-quantity').textContent = quantity;
+                document.getElementById('result-price').textContent = unitPrice.toFixed(2);
+                document.getElementById('result-total').textContent = totalCost.toFixed(2);
+                
+                resultsDiv.style.display = 'block';
+            });
+            
+            // Save import record
+            saveBtn.addEventListener('click', function() {
+                const medicineType = document.getElementById('medicine-type').value;
+                const medicineName = document.getElementById('medicine-name').value.trim();
+                const quantity = parseInt(document.getElementById('quantity').value);
+                const unitPrice = parseFloat(document.getElementById('unit-price').value);
+                const totalCost = quantity * unitPrice;
+                const now = new Date();
+                const dateString = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+                
+                // Add to table
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td>${document.getElementById('medicine-type').options[document.getElementById('medicine-type').selectedIndex].text}</td>
+                    <td>${medicineName}</td>
+                    <td>${quantity}</td>
+                    <td>$${unitPrice.toFixed(2)}</td>
+                    <td>$${totalCost.toFixed(2)}</td>
+                    <td>${dateString}</td>
+                `;
+                importTable.appendChild(newRow);
+                
+                // Reset form
+                document.getElementById('medicine-type').value = '';
+                document.getElementById('medicine-name').value = '';
+                document.getElementById('quantity').value = '';
+                document.getElementById('unit-price').value = '';
+                resultsDiv.style.display = 'none';
+                
+                alert('Import record saved successfully!');
+            });
+            
+            // Header color animation (from previous code)
+            const header = document.querySelector('.profile-header');
+            header.addEventListener('click', function() {
+                this.style.backgroundColor = '#3498db';
+                setTimeout(() => {
+                    this.style.backgroundColor = '#2c3e50';
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>

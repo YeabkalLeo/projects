@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movie API Dashboard</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .card {
+      margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .movie-poster {
+      width: 100px;
+      height: auto;
+      border-radius: 5px;
+    }
+    .rating {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-weight: bold;
+      color: white;
+    }
+    .rating-high {
+      background-color: #28a745;
+    }
+    .rating-medium {
+      background-color: #ffc107;
+      color: #212529;
+    }
+    .rating-low {
+      background-color: #dc3545;
+    }
+    .genre-chip {
+      display: inline-block;
+      padding: 3px 8px;
+      margin: 2px;
+      background-color: #e9ecef;
+      border-radius: 20px;
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <h1 class="text-center mb-4"><i class="fas fa-film"></i> Movie Dashboard</h1>
+    
+    <!-- Filter Controls -->
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-4">
+            <label for="genreFilter" class="form-label">Filter by Genre</label>
+            <select id="genreFilter" class="form-select">
+              <option value="">All Genres</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label for="yearFilter" class="form-label">Filter by Year</label>
+            <select id="yearFilter" class="form-select">
+              <option value="">All Years</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label for="ratingFilter" class="form-label">Minimum Rating</label>
+            <select id="ratingFilter" class="form-select">
+              <option value="0">Any Rating</option>
+              <option value="7">7+</option>
+              <option value="8">8+</option>
+              <option value="9">9+</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row">
+      <div class="col-md-3">
+        <div class="card text-white bg-primary">
+          <div class="card-body text-center">
+            <h5 class="card-title">Total Movies</h5>
+            <h2 id="totalMovies" class="card-text">0</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card text-white bg-success">
+          <div class="card-body text-center">
+            <h5 class="card-title">Average Rating</h5>
+            <h2 id="avgRating" class="card-text">0.0</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card text-white bg-info">
+          <div class="card-body text-center">
+            <h5 class="card-title">Top Genre</h5>
+            <h2 id="topGenre" class="card-text">-</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card text-white bg-warning">
+          <div class="card-body text-center">
+            <h5 class="card-title">Newest Movie</h5>
+            <h2 id="newestMovie" class="card-text">-</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="row mt-4">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Movies by Genre</h5>
+            <canvas id="genreChart" height="300"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Ratings Distribution</h5>
+            <canvas id="ratingChart" height="300"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Table -->
+    <div class="card mt-4">
+      <div class="card-body">
+        <h5 class="card-title">Movie List</h5>
+        <table id="movieTable" class="table table-striped" style="width:100%">
+          <thead>
+            <tr>
+              <th>Poster</th>
+              <th>Title</th>
+              <th>Year</th>
+              <th>Genres</th>
+              <th>Rating</th>
+              <th>Votes</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Movie Details Modal -->
+  <div class="modal fade" id="movieModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="movieModalTitle">Movie Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="movieModalBody">
+          Loading...
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+  <script>
+    // TMDB API Configuration
+    const API_KEY = 'YOUR_TMDB_API_KEY'; // Replace with your actual API key
+    const BASE_URL = 'https://api.themoviedb.org/3';
+    const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
+
+    // Global variables
+    let movies = [];
+    let genres = [];
+    let genreChart, ratingChart;
+    let movieTable;
+
+    // Initialize dashboard
+    $(document).ready(function() {
+      // First fetch genres, then movies
+      fetchGenres().then(() => {
+        fetchPopularMovies();
+      });
+
+      // Initialize DataTable
+      movieTable = $('#movieTable').DataTable({
+        columnDefs: [
+          { targets: [0, 6], orderable: false, searchable: false },
+          { targets: 2, type: 'num' },
+          { targets: 4, type: 'num' }
+        ],
+        pageLength: 10,
+        responsive: true
+      });
+
+      // Set up filter event listeners
+      $('#genreFilter, #yearFilter, #ratingFilter').change(applyFilters);
+
+      // Initialize modal
+      const movieModal = new bootstrap.Modal('#movieModal');
+    });
+
+    // Fetch movie genres from TMDB API
+    async function fetchGenres() {
+      try {
+        const response = await fetch(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}`);
+        const data = await response.json();
+        genres = data.genres;
+        
+        // Populate genre filter dropdown
+        const genreFilter = $('#genreFilter');
+        genres.forEach(genre => {
+          genreFilter.append(`<option value="${genre.id}">${genre.name}</option>`);
+        });
+      } catch (error) {
+        console.error('Error fetching genres:', error);
+      }
+    }
+
+    // Fetch popular movies from TMDB API
+    async function fetchPopularMovies() {
+      try {
+        // Show loading state
+        movieTable.processing(true);
+        
+        // Fetch multiple pages to get more movies
+        const totalPages = 3;
+        let allMovies = [];
+        
+        for (let page = 1; page <= totalPages; page++) {
+          const response = await fetch(`${BASE_URL}/movie/popular?api_key=${API_KEY}&page=${page}`);
+          const data = await response.json();
+          allMovies = [...allMovies, ...data.results];
+        }
+        
+        movies = allMovies.map(movie => ({
+          id: movie.id,
+          title: movie.title,
+          poster_path: movie.poster_path,
+          release_date: movie.release_date,
+          vote_average: movie.vote_average,
+          vote_count: movie.vote_count,
+          genre_ids: movie.genre_ids,
+          overview: movie.overview
+        }));
+        
+        // Process and display movies
+        processMovies();
+      } catch (error) {
+        console.error('Error fetching movies:', error);
+      } finally {
+        movieTable.processing(false);
+      }
+    }
+
+    // Process movie data and update UI
+    function processMovies() {
+      // Update stats
+      updateStats();
+      
+      // Update year filter dropdown
+      updateYearFilter();
+      
+      // Update DataTable
+      updateMovieTable();
+      
+      // Update charts
+      updateCharts();
+    }
+
+    // Update the statistics cards
+    function updateStats() {
+      // Total movies
+      $('#totalMovies').text(movies.length);
+      
+      // Average rating
+      const avgRating = movies.reduce((sum, movie) => sum + movie.vote_average, 0) / movies.length;
+      $('#avgRating').text(avgRating.toFixed(1));
+      
+      // Top genre
+      const genreCounts = {};
+      movies.forEach(movie => {
+        movie.genre_ids.forEach(genreId => {
+          genreCounts[genreId] = (genreCounts[genreId] || 0) + 1;
+        });
+      });
+      
+      let topGenreId = null;
+      let maxCount = 0;
+      for (const [genreId, count] of Object.entries(genreCounts)) {
+        if (count > maxCount) {
+          maxCount = count;
+          topGenreId = genreId;
+        }
+      }
+      
+      const topGenre = genres.find(g => g.id == topGenreId);
+      $('#topGenre').text(topGenre ? topGenre.name : '-');
+      
+      // Newest movie
+      const sortedByDate = [...movies].sort((a, b) => 
+        new Date(b.release_date) - new Date(a.release_date));
+      $('#newestMovie').text(sortedByDate[0]?.title || '-');
+    }
+
+    // Update the year filter dropdown
+    function updateYearFilter() {
+      const yearFilter = $('#yearFilter');
+      yearFilter.empty();
+      yearFilter.append('<option value="">All Years</option>');
+      
+      // Extract unique years from movies
+      const years = [...new Set(movies.map(movie => 
+        movie.release_date ? movie.release_date.split('-')[0] : null
+      ).filter(Boolean))].sort((a, b) => b - a);
+      
+      years.forEach(year => {
+        yearFilter.append(`<option value="${year}">${year}</option>`);
+      });
+    }
+
+    // Update the movie table
+    function updateMovieTable() {
+      movieTable.clear();
+      
+      movies.forEach(movie => {
+        const genreNames = movie.genre_ids.map(genreId => {
+          const genre = genres.find(g => g.id === genreId);
+          return genre ? genre.name : '';
+        }).filter(Boolean);
+        
+        const ratingClass = movie.vote_average >= 7.5 ? 'rating-high' : 
+                          movie.vote_average >= 5 ? 'rating-medium' : 'rating-low';
+        
+        movieTable.row.add([
+          movie.poster_path ? 
+            `<img src="${IMAGE_BASE_URL}${movie.poster_path}" class="movie-poster" alt="${movie.title}">` : 
+            '<i class="fas fa-image" style="font-size: 50px; color: #ccc;"></i>',
+          `<strong>${movie.title}</strong>`,
+          movie.release_date ? movie.release_date.split('-')[0] : 'N/A',
+          genreNames.map(name => `<span class="genre-chip">${name}</span>`).join(''),
+          `<span class="rating ${ratingClass}">${movie.vote_average.toFixed(1)}</span>`,
+          movie.vote_count.toLocaleString(),
+          `<button class="btn btn-sm btn-info view-details" data-id="${movie.id}">
+            <i class="fas fa-info-circle"></i> Details
+          </button>`
+        ]);
+      });
+      
+      movieTable.draw();
+      
+      // Add click handler for details buttons
+      $('.view-details').click(function() {
+        const movieId = $(this).data('id');
+        showMovieDetails(movieId);
+      });
+    }
+
+    // Update charts
+    function updateCharts() {
+      updateGenreChart();
+      updateRatingChart();
+    }
+
+    // Update genre distribution chart
+    function updateGenreChart() {
+      const genreCounts = {};
+      
+      // Initialize all genres with 0 count
+      genres.forEach(genre => {
+        genreCounts[genre.name] = 0;
+      });
+      
+      // Count movies per genre
+      movies.forEach(movie => {
+        movie.genre_ids.forEach(genreId => {
+          const genre = genres.find(g => g.id === genreId);
+          if (genre) {
+            genreCounts[genre.name]++;
+          }
+        });
+      });
+      
+      // Prepare chart data
+      const labels = [];
+      const data = [];
+      
+      for (const [genre, count] of Object.entries(genreCounts)) {
+        if (count > 0) {
+          labels.push(genre);
+          data.push(count);
+        }
+      }
+      
+      // Get or create chart
+      const ctx = document.getElementById('genreChart').getContext('2d');
+      
+      if (genreChart) {
+        genreChart.data.labels = labels;
+        genreChart.data.datasets[0].data = data;
+        genreChart.update();
+      } else {
+        genreChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Number of Movies',
+              data: data,
+              backgroundColor: 'rgba(54, 162, 235, 0.7)',
+              borderColor: 'rgba(54, 162, 235, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  precision: 0
+                }
+              }
+            }
+          }
+        });
+      }
+    }
+
+    // Update rating distribution chart
+    function updateRatingChart() {
+      // Group ratings into buckets
+      const ratingBuckets = {
+        '0-2': 0,
+        '2-4': 0,
+        '4-6': 0,
+        '6-8': 0,
+        '8-10': 0
+      };
+      
+      movies.forEach(movie => {
+        const rating = movie.vote_average;
+        if (rating >= 8) ratingBuckets['8-10']++;
+        else if (rating >= 6) ratingBuckets['6-8']++;
+        else if (rating >= 4) ratingBuckets['4-6']++;
+        else if (rating >= 2) ratingBuckets['2-4']++;
+        else ratingBuckets['0-2']++;
+      });
+      
+      const labels = Object.keys(ratingBuckets);
+      const data = Object.values(ratingBuckets);
+      
+      const ctx = document.getElementById('ratingChart').getContext('2d');
+      
+      if (ratingChart) {
+        ratingChart.data.labels = labels;
+        ratingChart.data.datasets[0].data = data;
+        ratingChart.update();
+      } else {
+        ratingChart = new Chart(ctx, {
+          type: 'pie',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Rating Distribution',
+              data: data,
+              backgroundColor: [
+                'rgba(255, 99, 132, 0.7)',
+                'rgba(255, 159, 64, 0.7)',
+                'rgba(255, 205, 86, 0.7)',
+                'rgba(75, 192, 192, 0.7)',
+                'rgba(54, 162, 235, 0.7)'
+              ],
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true
+          }
+        });
+      }
+    }
+
+    // Apply filters to the movie table
+    function applyFilters() {
+      const genreFilter = $('#genreFilter').val();
+      const yearFilter = $('#yearFilter').val();
+      const ratingFilter = parseFloat($('#ratingFilter').val());
+      
+      movieTable.rows().every(function() {
+        const rowData = this.data();
+        const movie = movies.find(m => m.title === $(rowData[1]).text());
+        
+        let showRow = true;
+        
+        // Apply genre filter
+        if (genreFilter && movie) {
+          showRow = showRow && movie.genre_ids.includes(parseInt(genreFilter));
+        }
+        
+        // Apply year filter
+        if (yearFilter && movie) {
+          const movieYear = movie.release_date ? movie.release_date.split('-')[0] : '';
+          showRow = showRow && movieYear === yearFilter;
+        }
+        
+        // Apply rating filter
+        if (ratingFilter && movie) {
+          showRow = showRow && movie.vote_average >= ratingFilter;
+        }
+        
+        this.nodes().to$().toggle(showRow);
+      });
+    }
+
+    // Show movie details in modal
+    async function showMovieDetails(movieId) {
+      try {
+        const modalTitle = $('#movieModalTitle');
+        const modalBody = $('#movieModalBody');
+        
+        modalTitle.text('Loading...');
+        modalBody.html('<div class="text-center"><i class="fas fa-spinner fa-spin fa-3x"></i></div>');
+        
+        const movieModal = new bootstrap.Modal('#movieModal');
+        movieModal.show();
+        
+        // Fetch movie details
+        const response = await fetch(`${BASE_URL}/movie/${movieId}?api_key=${API_KEY}`);
+        const movie = await response.json();
+        
+        // Fetch movie credits
+        const creditsResponse = await fetch(`${BASE_URL}/movie/${movieId}/credits?api_key=${API_KEY}`);
+        const credits = await creditsResponse.json();
+        
+        // Update modal content
+        modalTitle.text(movie.title);
+        
+        const directors = credits.crew.filter(person => person.job === 'Director');
+        const topCast = credits.cast.slice(0, 5);
+        
+        modalBody.html(`
+          <div class="row">
+            <div class="col-md-4">
+              ${movie.poster_path ? 
+                `<img src="${IMAGE_BASE_URL}${movie.poster_path}" class="img-fluid rounded mb-3" alt="${movie.title}">` : 
+                '<div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 450px;"><i class="fas fa-image fa-5x text-muted"></i></div>'}
+              <div class="d-grid gap-2">
+                <a href="https://www.themoviedb.org/movie/${movie.id}" target="_blank" class="btn btn-primary">
+                  <i class="fas fa-external-link-alt"></i> View on TMDB
+                </a>
+              </div>
+            </div>
+            <div class="col-md-8">
+              <h3>${movie.title} <small class="text-muted">(${movie.release_date ? movie.release_date.split('-')[0] : 'N/A'})</small></h3>
+              
+              <div class="mb-3">
+                ${movie.genres.map(genre => `<span class="badge bg-secondary me-1">${genre.name}</span>`).join('')}
+                <span class="ms-2">
+                  <i class="fas fa-star text-warning"></i> ${movie.vote_average.toFixed(1)}/10 (${movie.vote_count.toLocaleString()} votes)
+                </span>
+              </div>
+              
+              <h5>Overview</h5>
+              <p>${movie.overview || 'No overview available.'}</p>
+              
+              <div class="row mt-4">
+                <div class="col-md-6">
+                  <h5>Details</h5>
+                  <ul class="list-unstyled">
+                    ${movie.runtime ? `<li><strong>Runtime:</strong> ${movie.runtime} minutes</li>` : ''}
+                    ${movie.release_date ? `<li><strong>Release Date:</strong> ${movie.release_date}</li>` : ''}
+                    ${movie.status ? `<li><strong>Status:</strong> ${movie.status}</li>` : ''}
+                    ${movie.budget ? `<li><strong>Budget:</strong> $${movie.budget.toLocaleString()}</li>` : ''}
+                    ${movie.revenue ? `<li><strong>Revenue:</strong> $${movie.revenue.toLocaleString()}</li>` : ''}
+                  </ul>
+                </div>
+                <div class="col-md-6">
+                  <h5>Production</h5>
+                  <ul class="list-unstyled">
+                    ${movie.production_companies.length > 0 ? `
+                      <li><strong>Companies:</strong> 
+                        ${movie.production_companies.map(c => c.name).join(', ')}
+                      </li>` : ''}
+                    ${movie.production_countries.length > 0 ? `
+                      <li><strong>Countries:</strong> 
+                        ${movie.production_countries.map(c => c.name).join(', ')}
+                      </li>` : ''}
+                    ${movie.spoken_languages.length > 0 ? `
+                      <li><strong>Languages:</strong> 
+                        ${movie.spoken_languages.map(l => l.english_name).join(', ')}
+                      </li>` : ''}
+                  </ul>
+                </div>
+              </div>
+              
+              ${directors.length > 0 ? `
+                <h5 class="mt-3">Director${directors.length > 1 ? 's' : ''}</h5>
+                <p>${directors.map(d => d.name).join(', ')}</p>
+              ` : ''}
+              
+              ${topCast.length > 0 ? `
+                <h5 class="mt-3">Top Cast</h5>
+                <div class="row">
+                  ${topCast.map(actor => `
+                    <div class="col-6 col-md-4 col-lg-3 mb-3">
+                      <div class="card h-100">
+                        ${actor.profile_path ? 
+                          `<img src="${IMAGE_BASE_URL}${actor.profile_path}" class="card-img-top" alt="${actor.name}">` : 
+                          `<div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 100px;">
+                            <i class="fas fa-user fa-3x text-muted"></i>
+                          </div>`}
+                        <div class="card-body">
+                          <h6 class="card-title">${actor.name}</h6>
+                          <p class="card-text small text-muted">${actor.character}</p>
+                        </div>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        `);
+      } catch (error) {
+        console.error('Error fetching movie details:', error);
+        $('#movieModalBody').html(`
+          <div class="alert alert-danger">
+            Failed to load movie details. Please try again later.
+          </div>
+        `);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function getusername(){
+            let username=prompt("enter your name");
+            return username;
+        }
+        function getsalary(){
+            let salary=prompt("enter your salary");
+            return salary;
+        }
+        function gettax(salary){
+            let tax=salary*0.35;
+            return tax;
+        }
+        function getaftertaxsalary(salary,tax){
+            let aftertaxsalary=salary-tax;
+            return aftertaxsalary;
+        }
+        function checkloan(aftertaxsalary,username){
+            if(aftertaxsalary>35000){
+                alert(username+", you are eligible for loan");
+            }else{
+                alert(username+", you are not eligible for loan");
+            }
+        }
+        let username=getusername();
+        let salary=getsalary();
+        let tax=gettax(salary);
+        let aftertaxsalary=getaftertaxsalary(salary,tax);
+        checkloan(aftertaxsalary,username);
+
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Messi Therapy Session - Specialized Therapy Center</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bs-primary: #0066cc;
+            --bs-primary-rgb: 0, 102, 204;
+            --bs-secondary: #6c757d;
+            --bs-light: #f8f9fa;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .hospital-header {
+            background-color: var(--bs-primary);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .service-card {
+            border: none;
+            border-radius: 10px;
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .therapy-img {
+            max-height: 300px;
+            object-fit: cover;
+            margin-bottom: 2rem;
+            border-radius: 10px !important;
+        }
+        
+        .contact-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .rating-value {
+            font-weight: bold;
+            color: var(--bs-primary);
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="hospital-header text-center">
+        <div class="container">
+            <h1 class="display-4 fw-bold">Messi Hospital</h1>
+            <p class="lead">Specialized Therapy and Rehabilitation Center</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Introduction Section with colored background -->
+        <section class="mb-5 text-bg-light p-4 rounded">
+            <div class="row">
+                <div class="col-lg-6">
+                    <h2 class="text-primary mb-4">Welcome to Messi Hospital</h2>
+                    <p class="lead">At Messi Hospital, we specialize in providing comprehensive therapy services for patients in need of rehabilitation and recovery.</p>
+                    <p>Our team of dedicated professionals is committed to helping individuals regain their strength, mobility, and independence through personalized treatment plans. We believe in a patient-centered approach, ensuring each individual receives the care and attention they need to achieve their recovery goals.</p>
+                </div>
+                <div class="col-lg-6">
+                    <img src="https://www.denofgeek.com/wp-content/uploads/2021/08/The-Sopranos-Melfi.jpg?resize=768%2C432" class="therapy-img rounded float-end img-fluid" alt="Therapy session">
+                     </div>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section class="mb-5">
+            <h2 class="text-primary text-center mb-4">Our Specialized Services</h2>
+            
+            <div class="container text-center">
+                <div class="row align-items-start g-4">
+                    <div class="col-md-4">
+                        <div class="card service-card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">Physical Therapy</h5>
+                                <p class="card-text">Restoring movement and function when affected by injury, illness or disability.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card service-card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">Occupational Therapy</h5>
+                                <p class="card-text">Helping patients improve their ability to perform daily activities.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card service-card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">Speech Therapy</h5>
+                                <p class="card-text">Improving communication skills and swallowing function.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row align-items-start g-4 mt-2">
+                    <div class="col-md-4">
+                        <div class="card service-card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">Post-Surgical Rehab</h5>
+                                <p class="card-text">Specialized recovery programs after surgical procedures.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card service-card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">Sports Recovery</h5>
+                                <p class="card-text">Helping athletes return to peak performance after injuries.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card service-card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">Neurological Rehab</h5>
+                                <p class="card-text">Specialized care for stroke, spinal cord and brain injuries.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-4 text-center">
+                <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" class="therapy-img rounded float-start me-4 img-fluid" alt="Physical therapy">
+                <img src="https://images.unsplash.com/photo-1571019614243-cf5a25cdf05a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" class="therapy-img rounded float-end img-fluid" alt="Occupational therapy">
+            </div>
+        </section>
+
+        <!-- Patient Rating Section with colored background -->
+        <section class="mb-5 text-bg-primary p-4 rounded">
+            <h2 class="text-center text-white mb-4">Rate Your Experience</h2>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <form>
+                        <div class="mb-3">
+                            <label for="patientName" class="form-label text-white">Your Name</label>
+                            <input type="text" class="form-control" id="patientName" placeholder="Enter your name">
+                        </div>
+                        <div class="mb-3">
+                            <label for="experienceRange" class="form-label text-white">How would you rate your experience with us? <span id="rangeValue" class="rating-value">50</span>/100</label>
+                            <input type="range" class="form-range" id="experienceRange" min="0" max="100" value="50" oninput="document.getElementById('rangeValue').textContent = this.value">
+                        </div>
+                        <div class="mb-3">
+                            <label for="feedbackText" class="form-label text-white">Your Feedback</label>
+                            <textarea class="form-control" id="feedbackText" rows="3" placeholder="Tell us about your experience"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-light">Submit Rating</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section with colored background -->
+        <section class="contact-section mb-5 text-bg-light p-4 rounded">
+            <div class="row">
+                <div class="col-lg-6">
+                    <h2 class="text-primary mb-4">Contact Us</h2>
+                    <p><strong>Phone:</strong> <a href="tel:0970510868" class="text-decoration-none">0970 510 868</a></p>
+                    <p><strong>Email:</strong> info@messihospital.com</p>
+                    <p><strong>Address:</strong> 123 Therapy Street, Recovery City</p>
+                    <p><strong>Hours:</strong> Monday-Friday: 8am-7pm, Saturday: 9am-3pm</p>
+                    
+                    <!-- Additional rating element -->
+                    <div class="mt-4">
+                        <h4 class="text-primary">Our Patient Satisfaction Score</h4>
+                        <label for="hospitalRating" class="form-label">Current rating: <span class="rating-value">92</span>/100</label>
+                        <input type="range" class="form-range" id="hospitalRating" value="92" disabled>
+                        <small class="text-muted">Based on 245 patient reviews</small>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <h3 class="text-primary mb-4">Send Us a Message</h3>
+                    <form>
+                        <div class="mb-3">
+                            <label for="emailInput" class="form-label">Email address</label>
+                            <input type="email" class="form-control" id="emailInput" placeholder="name@example.com">
+                        </div>
+                        <div class="mb-3">
+                            <label for="nameInput" class="form-label">Your Name</label>
+                            <input type="text" class="form-control" id="nameInput" placeholder="John Doe">
+                        </div>
+                        <div class="mb-3">
+                            <label for="phoneInput" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phoneInput" placeholder="0970 510 868">
+                        </div>
+                        <div class="mb-3">
+                            <label for="messageTextarea" class="form-label">Your Message</label>
+                            <textarea class="form-control" id="messageTextarea" rows="4" placeholder="How can we help you?"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-primary text-white py-4">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2023 Messi Hospital. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Grade Evaluator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-6">
+  <div class="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-lg">
+    <h1 class="text-3xl font-bold mb-6 text-center">🎓 Student Grade Evaluator</h1>
+
+    <!-- Input Form -->
+    <div class="space-y-4 mb-6">
+      <input id="studentName" type="text" placeholder="Student Name" class="w-full p-3 border rounded" />
+      <input id="studentScores" type="text" placeholder="Enter scores separated by commas (e.g. 85,90,78)" class="w-full p-3 border rounded" />
+      <button id="evaluateBtn" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+        Evaluate Student
+      </button>
+    </div>
+
+    <!-- Result -->
+    <div id="results" class="space-y-4"></div>
+  </div>
+
+  <script>
+    // Arrow Functions
+    const getTotal = scores => scores.reduce((sum, score) => sum + score, 0);
+    const getAverage = scores => getTotal(scores) / scores.length;
+    const getGrade = avg => {
+      if (avg >= 90) return "A+";
+      else if (avg >= 80) return "A";
+      else if (avg >= 70) return "B";
+      else if (avg >= 60) return "C";
+      else if (avg >= 50) return "D";
+      else return "F";
+    };
+    const hasFailed = scores => scores.some(score => score < 35);
+    const getStatus = scores => hasFailed(scores) ? "❌ Fail" : "✅ Pass";
+
+    // DOM Elements
+    const nameInput = document.getElementById("studentName");
+    const scoresInput = document.getElementById("studentScores");
+    const evaluateBtn = document.getElementById("evaluateBtn");
+    const resultsDiv = document.getElementById("results");
+
+    evaluateBtn.addEventListener("click", () => {
+      const name = nameInput.value.trim();
+      const scoreText = scoresInput.value.trim();
+
+      if (!name || !scoreText) {
+        alert("Please enter both name and scores.");
+        return;
+      }
+
+      const scores = scoreText.split(",").map(s => parseInt(s.trim())).filter(s => !isNaN(s));
+      if (scores.length === 0) {
+        alert("Please enter valid numeric scores.");
+        return;
+      }
+
+      const total = getTotal(scores);
+      const average = getAverage(scores).toFixed(2);
+      const grade = getGrade(average);
+      const status = getStatus(scores);
+
+      const studentCard = `
+        <div class="bg-gray-50 p-4 rounded-md shadow flex flex-col md:flex-row md:justify-between">
+          <div>
+            <p class="font-semibold text-lg">${name}</p>
+            <p>Scores: ${scores.join(", ")}</p>
+          </div>
+          <div class="text-right md:text-left mt-4 md:mt-0">
+            <p>Total: <span class="font-medium">${total}</span></p>
+            <p>Average: <span class="font-medium">${average}</span></p>
+            <p>Grade: <span class="font-medium">${grade}</span></p>
+            <p>Status: <span class="${status.includes('Fail') ? 'text-red-600' : 'text-green-600'} font-semibold">${status}</span></p>
+          </div>
+        </div>
+      `;
+
+      resultsDiv.insertAdjacentHTML("beforeend", studentCard);
+
+      // Clear inputs
+      nameInput.value = "";
+      scoresInput.value = "";
+    });
+  </script>
+</body>
+</html>
